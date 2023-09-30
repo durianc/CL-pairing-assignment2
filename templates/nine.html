@@ -104,6 +104,25 @@
         audio {
             display: none;
         }
+        /*计时器*/
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            position: absolute;
+            top: 46%;
+            left: 90%;
+        }
+
+        #pauseButton{
+            position: absolute;
+            top: 46%;
+            left: 90%;
+        }
+        #resumeButton{
+            position: absolute;
+            top: 46%;
+            left: 94%;
+        }
     </style>
 </head>
 <body>
@@ -129,6 +148,10 @@
    <div class="x" title="刷新题目">
         <img src="../static/像素风_火箭.png" onclick="javascript:location.reload();">
    </div>
+
+    <p id="timer">计时: 0秒</p>
+    <button id="pauseButton">⏸</button>
+    <button id="resumeButton" disabled>▶️</button>
 
    <script>
         function zanting(){
@@ -202,7 +225,50 @@
                 mark = true;
             }
         }
+         // 获取计时器元素
+        var timerElement = document.getElementById("timer");
 
+        // 获取暂停和恢复按钮元素
+        var pauseButton = document.getElementById("pauseButton");
+        var resumeButton = document.getElementById("resumeButton");
+
+        // 计时器变量
+        var seconds = 0;
+        var timer;
+
+        // 更新计时器显示
+        function updateTimer() {
+            timerElement.textContent = "计时: " + seconds + "秒";
+            seconds++;
+        }
+
+        // 启动计时器
+        function startTimer() {
+            timer = setInterval(updateTimer, 1000);
+            pauseButton.disabled = false;
+            resumeButton.disabled = true;
+        }
+
+        // 暂停计时器
+        function pauseTimer() {
+            clearInterval(timer);
+            pauseButton.disabled = true;
+            resumeButton.disabled = false;
+        }
+
+        // 继续计时器
+        function resumeTimer() {
+            startTimer();
+        }
+
+        // 绑定暂停按钮的点击事件
+        pauseButton.addEventListener("click", pauseTimer);
+
+        // 绑定恢复按钮的点击事件
+        resumeButton.addEventListener("click", resumeTimer);
+
+        // 启动计时器
+        startTimer();
 
 
    </script>
