@@ -147,6 +147,21 @@ def solve_sudoku(grid):
 
     # 所有数字都尝试过了，无解
     return False
+# 并发处理数独求解任务
+def concurrent_solve_sudoku(grids):
+    results = []
+    with ThreadPoolExecutor() as executor:
+        # 提交每个数独求解任务给线程池
+        for grid in grids:
+            results.append(executor.submit(solve_sudoku, grid))
+
+    # 获取求解结果
+    solutions = []
+    for result in results:
+        solution = result.result()
+        solutions.append(solution)
+
+    return solutions
 
 
 def find_empty_cell(grid):
