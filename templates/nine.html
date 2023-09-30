@@ -123,6 +123,15 @@
             top: 46%;
             left: 94%;
         }
+        input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-family: 'IPix', sans-serif;
+            font-size: 10px;
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -154,6 +163,10 @@
     <button id="resumeButton" disabled>▶️</button>
 
    <script>
+        function validateInput(event) {
+            
+        }
+
         function zanting(){
             var audio = document.getElementsByTagName("audio")[0];
             if(audio.paused){
@@ -179,11 +192,18 @@
                 var cell;
                 for (let j = 0; j < 9; j++) {
                     cell = document.createElement('td');
-                    cell.innerText = sudoku[k][j];
                     if (sudoku[k][j] == " ") {
-                        cell.style.color = "red";
+                        var input = document.createElement("input");
+                        input.id = "cell-" + i + "-" + j;
+                        input.className = "sudoku-cell";
+                        input.oninput = validateInput;
+                        cell.appendChild(input);
+                    }
+                    else {
+                        cell.innerText = sudoku[k][j];
                     }
                     row.appendChild(cell);
+
                 }
                 sudokuTable.appendChild(row);
             }
