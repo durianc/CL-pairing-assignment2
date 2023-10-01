@@ -164,7 +164,69 @@
 
    <script>
         function validateInput(event) {
-            
+            var input = event.target;
+            var value = input.value;
+            // 如果输入的不是数字，则弹出提示
+            if (isNaN(value)) {
+                alert("请输入数字！");
+                input.value = "";
+                return;
+            }
+            // 如果输入的数字不在1-9之间，则弹出提示
+            if (value < 1 || value > 9) {
+                alert("请输入1-9之间的数字！");
+                input.value = "";
+                return;
+            }
+            // 是否符合数独规则
+            var id = input.id;
+            var idParts = id.split("-");
+            var sudokuIndex = idParts[0];
+            var rowIndex = idParts[1];
+            var colIndex = idParts[2];
+            var sudoku = sudokus[sudokuIndex];
+            for(let i = 0;i < 9;i ++){
+                if(sudoku[rowIndex][i] == value && i != colIndex){
+                    alert("同一行不能有相同的数字！");
+                    input.value = "";
+                    return;
+                }
+            }
+            for(let i = 0;i < 9;i ++){
+                if(sudoku[i][colIndex] == value && i != rowIndex){
+                    alert("同一列不能有相同的数字！");
+                    input.value = "";
+                    return;
+                }
+            }
+            var rowStart = Math.floor(rowIndex / 3) * 3;
+            var colStart = Math.floor(colIndex / 3) * 3;
+            for(let i = rowStart;i < rowStart + 3;i ++){
+                for(let j = colStart;j < colStart + 3;j ++){
+                    if(sudoku[i][j] == value && i != rowIndex && j != colIndex){
+                        alert("同一宫不能有相同的数字！");
+                        input.value = "";
+                        return;
+                    }
+                }
+            }
+            sudoku[rowIndex][colIndex] = value;
+            // 判断是否完成
+            var isFinished = true;
+            for(let i = 0;i < 9;i ++){
+                for(let j = 0;j < 9;j ++){
+                    if(sudoku[i][j] == " "){
+                        isFinished = false;
+                        break;
+                    }
+                }
+            }
+            if(isFinished){
+                // 使这个九宫格变成绿色
+                var sudokuTable = input.parentElement.parentElement.parentElement;
+                sudokuTable.style.backgroundColor = "green";
+            }
+
         }
 
         function zanting(){
@@ -194,7 +256,7 @@
                     cell = document.createElement('td');
                     if (sudoku[k][j] == " ") {
                         var input = document.createElement("input");
-                        input.id = "cell-" + i + "-" + j;
+                        input.id = i + "-" + k + "-" + j;
                         input.className = "sudoku-cell";
                         input.oninput = validateInput;
                         cell.appendChild(input);
