@@ -82,6 +82,29 @@ def get_history():
     }
     return render_template('history.html', data=json.dumps(data))
 
+@app.route('/solve_sudokus', methods=['POST'])
+def solve_sudokus():
+    request_data = request.get_json()
+    sudokus = request_data['sudokus']
+    # 并发处理数独求解任务
+    start = time.time()
+    with ThreadPoolExecutor(max_workers=9) as executor:
+        results = [executor.submit(get_solutions, sudoku) for sudoku in sudokus]
+    end = time.time()
+    # 获取结果
+    solutions = []
+    for result in results:
+        solutions.append(result.result())
+    print(solutions)
+    # 返回结果
+    data = {
+        'answers': solutions,
+        'time': end - start
+    }
+    return jsonify(data)
+
+
+
 #生成数独的主函数
 def generate_sudoku_task(difficulty):
     # 创建一个空的9x9数独网格
@@ -123,6 +146,30 @@ def generate_sudoku_task(difficulty):
     shijian.insert(0, str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
     history_answer.insert(0, answer)
     return grid, answer
+
+#获取输入题目的答案
+def get_solutions(grid):
+    # 寻找空格的位置
+    row, col = find_empty_cell(grid)
+
+    # 如果没有找到空格，说明数独已经解决
+    if row == -1 and col == -1:
+        return grid
+
+    # 尝试填入数字
+    for num in range(1, 10):
+        if is_valid(grid, row, col, num):
+            grid[row][col] = num
+
+            # 递归解决剩余的空格
+            if solve_sudoku(grid):
+                return grid
+
+            # 如果递归未能解决数独，回溯并尝试下一个数字
+            grid[row][col] = 0
+
+    # 所有数字都尝试过了，无解
+    return None
 
 
 def solve_sudoku(grid):
@@ -168,7 +215,7 @@ def find_empty_cell(grid):
     # 寻找数值为0的空格
     for i in range(9):
         for j in range(9):
-            if grid[i][j] == 0:
+            if grid[i][j] == 0 or grid[i][j] == ' ':
                 return i, j
     return -1, -1
 
