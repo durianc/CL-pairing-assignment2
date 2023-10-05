@@ -22,7 +22,7 @@
         .laba img {
             cursor: pointer;
             position: absolute;
-            top: 10%;
+            top: 5%;
             left: 90%;
             width:103px;
             height:97px;
@@ -30,7 +30,7 @@
         .house img{
             cursor: pointer;
             position: absolute;
-            top: 32%;
+            top: 27%;
             left: 90%;
             width:101px;
             height:97px;
@@ -38,7 +38,7 @@
         .eye img{
             cursor: pointer;
             position: absolute;
-            top: 54%;
+            top: 59%;
             left: 90%;
             width:103px;
             height:97px;
@@ -46,7 +46,7 @@
         .x img{
             cursor: pointer;
             position: absolute;
-            top: 76%;
+            top: 81%;
             left: 90%;
             width:103px;
             height:97px;
@@ -106,24 +106,27 @@
         }
 
         /*计时器*/
+        #jishiqi {
+            cursor: pointer;
+            position: absolute;
+            top: 45%;
+            left: 90%;
+            width:101px;
+            height:97px;
+        }
         #timer {
             font-size: 24px;
             font-weight: bold;
-            position: absolute;
-            top: 46%;
-            left: 86%;
+            font-family: 'IPix', sans-serif;
+            text-align: center;
         }
 
         #pauseButton{
             position: absolute;
-            top: 46%;
-            left: 90%;
+            top: 0%;
+            left: 35%;
         }
-        #resumeButton{
-            position: absolute;
-            top: 46%;
-            left: 94%;
-        }
+
         input {
             width: 100%;
             height: 100%;
@@ -161,10 +164,10 @@
         <img src="../static/像素风_火箭.png" onclick="javascript:location.reload();">
    </div>
 
-    <p id="timer">计时: 00分：00秒</p>
-    <button id="pauseButton">⏸</button>
-    <button id="resumeButton" disabled>▶️</button>
-
+    <div id="jishiqi">
+        <p id="timer">00:00</p>
+        <button id="pauseButton">⏸</button>
+    </div>
    <script>
         var count = 0;
         function validateInput(event) {
@@ -337,7 +340,6 @@
 
         // 获取暂停和恢复按钮元素
         var pauseButton = document.getElementById("pauseButton");
-        var resumeButton = document.getElementById("resumeButton");
 
         // 计时器变量
         var seconds = 0;
@@ -352,34 +354,34 @@
             var formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
             var formattedSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
 
-            timerElement.textContent = "计时: " + formattedMinutes + "分：" + formattedSeconds + "秒";
+            timerElement.textContent = formattedMinutes + ":" + formattedSeconds;
             seconds++;
         }
 
         // 启动计时器
         function startTimer() {
             timer = setInterval(updateTimer, 1000);
-            pauseButton.disabled = false;
-            resumeButton.disabled = true;
+            pauseButton.innerHTML = "⏸";
         }
 
         // 暂停计时器
         function pauseTimer() {
             clearInterval(timer);
-            pauseButton.disabled = true;
-            resumeButton.disabled = false;
+            pauseButton.innerHTML = "▶️";
         }
 
         // 继续计时器
         function resumeTimer() {
-            startTimer();
+            if(pauseButton.innerHTML == "▶️"){
+                startTimer();
+            }
+            else{
+                pauseTimer();
+            }
         }
 
         // 绑定暂停按钮的点击事件
-        pauseButton.addEventListener("click", pauseTimer);
-
-        // 绑定恢复按钮的点击事件
-        resumeButton.addEventListener("click", resumeTimer);
+        pauseButton.addEventListener("click", resumeTimer);
 
         // 启动计时器
         startTimer();

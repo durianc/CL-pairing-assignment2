@@ -59,6 +59,7 @@ def generate_hard_sudoku():
 #并发生成九个hard难度的数独
 @app.route('/nine')
 def nine():
+    # 并发生成数独
     with ThreadPoolExecutor(max_workers=9) as executor:
         results = [executor.submit(generate_sudoku_task,"hard") for i in range(9)]
     sudokus, answers = [], []
